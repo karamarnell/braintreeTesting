@@ -1,0 +1,293 @@
+# Configuration for BANK PaymentMethod.
+type BankConfiguration implements PaymentMethodConfiguration {
+  # Name of the PaymentMethod value. Making a change
+  name: PaymentMethodName
+
+  # Whether or not to display a PayPal branded experience on the client for the payment method
+  isPayPalBranded: Boolean
+}
+
+# Configuration for PAYPAL_WALLET PaymentMethod.
+type PayPalWalletConfiguration implements PaymentMethodConfiguration {
+  # Name of the PaymentMethod value. Making a change
+  name: PaymentMethodName
+
+  # Whether or not to display a PayPal branded experience on the client for the payment method.
+  isPayPalBranded: Boolean
+}
+
+# Configuration for PAYPAL_CREDIT PaymentMethod.
+type PayPalCreditConfiguration implements PaymentMethodConfiguration {
+  # Name of the PaymentMethod value. Making a change
+  name: PaymentMethodName
+
+  # Whether or not to display a PayPal branded experience on the client for the payment method.
+  isPayPalBranded: Boolean
+}
+
+# Top level output field from creating a transfer.
+type CreatePayoutsTransferPayload {
+  # An identifier used to reconcile requests and responses.
+  clientMutationId: String
+
+  # Output fields for a transfer object.
+  payoutsTransfer: PayoutsTransfer
+}
+
+# Output fields for a transfer node.
+type PayoutsTransfer implements Node {
+  # Unique identifier of the transfer.
+  id: ID!
+
+  # Amount transferred.
+  amount: Amount
+
+  # Currency code for the amount in the transfer.
+  currencyCode: CurrencyCodeAlpha
+
+  # Source payment method of the transfer.
+  source: PayoutsPaymentMethod
+
+  # Destination payment method of the transfer.
+  destination: PayoutsPaymentMethod
+
+  # Status of the transfer.
+  status: PayoutsStatus
+
+  # Date and time when the transfer was created.
+  createdAt: Timestamp
+
+  # Response from the processor for this transfer.
+  processorResponse: ProcessorResponse
+}
+
+# Options, settings, and data related to the Payouts product.
+type Payouts {
+  # Merchant's default Payouts balance.
+  defaultBalance: PayoutsBalance
+}
+
+# Top-level fields returned from a created client token.
+type CreateClientTokenPayload {
+  # An identifier used to reconcile requests and responses.
+  clientMutationId: String
+
+  # A Base64 encoded string used to initialize client SDKs.
+  clientToken: String
+}
+
+# Top-level fields returned from client confiuration query.
+type ClientConfiguration {
+  # URL to send analytics
+  analyticsUrl: String @deprecated(reason: "This field is included for supporting SDKs that send analytics.")
+
+  # Configuration for ApplePay on ios.
+  applePay: ApplePayConfiguration
+
+  # Configuration for Apple Pay on the web.
+  applePayWeb: ApplePayWebConfiguration
+
+  # A URL pointing to the base path of Braintree's web pages used for various browser switches and popups.
+  assetsUrl: String
+
+  # A url pointing to the base path of Braintree's client API for clients.
+  clientApiUrl: String @deprecated(reason: "This field is included for supporting legacy clients.")
+
+  # A list of ClientFeatures a Merchant supports.
+  supportedFeatures: [ClientFeature] @deprecated(reason: "This field is included for supporting legacy clients.")
+
+  # Returns unified configuration.
+  paymentMethodConfigurations(merchantId: ID, locale: String = "US"): [PaymentMethodConfiguration]
+
+  # :nodoc:
+  braintreeApi: BraintreeApiConfiguration
+
+  # Configuration for credit card tokenization.
+  creditCard: CreditCardConfiguration
+
+  # The enum of the current environment.
+  environment: ClientConfigurationEnvironment
+
+  # Configuration for Google Pay on Android and the web.
+  googlePay: GooglePayConfiguration
+
+  # Configuration for iDeal.
+  ideal: IDealConfiguration
+
+  # Configuration for Kount fraud tools.
+  kount: KountConfiguration
+
+  # Configuration for Masterpass.
+  masterpass: MasterpassConfiguration
+
+  # The current merchant id based on the authentication used.
+  merchantId: String
+
+  # Configuration for PayPal.
+  paypal: PayPalConfiguration
+
+  # Configuration for Samsung Pay.
+  samsungPay: SamsungPayConfiguration
+
+  # Configuration for Union Pay cards.
+  unionPay: UnionPayConfiguration
+
+  # Configuration for US bank account processing.
+  usBankAccount: USBankAccountConfiguration
+
+  # Configuration for Pay with Venmo.
+  venmo: VenmoConfiguration
+
+  # Configuration for Visa Checkout.
+  visaCheckout: VisaCheckoutConfiguration
+}
+
+# Configuration for Apple Pay on iOS.
+type ApplePayConfiguration {
+  # The environment being used for Apple Pay.
+  status: ApplePayStatus
+
+  # The Apple Pay country code for the current merchant.
+  countryCode: CountryCodeAlpha2
+
+  # The Apple Pay currency ISO code for the current merchant.
+  currencyCode: CurrencyCodeAlpha
+
+  # The merchant identifier that must be supplied when making an Apple Pay request.
+  merchantIdentifier: String
+
+  # A list of card brands supported for Apple Pay by the current merchant.
+  supportedCardBrands: [CreditCardBrandCode]
+}
+
+# Configuration for Apple Pay on web.
+type ApplePayWebConfiguration {
+  # The Apple Pay country code for the current merchant.
+  countryCode: CountryCodeAlpha2
+
+  # The Apple Pay currency ISO code for the current merchant.
+  currencyCode: CurrencyCodeAlpha
+
+  # The merchant identifier that must be supplied when making an Apple Pay request.
+  merchantIdentifier: String
+
+  # A list of card brands supported for Apple Pay by the current merchant.
+  supportedCardBrands: [CreditCardBrandCode]
+}
+
+# Configuration for iDeal.
+type IDealConfiguration {
+  # The route id used to process an iDeal payment.
+  routeId: String
+
+  # A url used to redirect the user to the banks web page.
+  assetsUrl: String
+}
+
+# Configuration for Kount fraud tools.
+type KountConfiguration {
+  # The Kount merchant id used to identify the fraud data collection request.
+  merchantId: String
+}
+
+# Configuration for Masterpass.
+type MasterpassConfiguration {
+  # The Masterpass merchant checkout id used to identify the merchant in Masterpass requests.
+  merchantCheckoutId: String
+
+  # A list of card brands supported for Masterpass by the current merchant.
+  supportedCardBrands: [CreditCardBrandCode]
+}
+
+# Configuration for Samsung Pay on Android.
+type SamsungPayConfiguration {
+  # A string used to identify the merchant to the end user.
+  displayName: String
+
+  # The Samsung Pay service id.
+  serviceId: String
+
+  # Authorization to use when tokenizing Samsung Pay.
+  samsungAuthorization: String
+
+  # A list of card brands supported for Samsung Pay by the current merchant.
+  supportedCardBrands: [CreditCardBrandCode]
+}
+
+# Configuration for UnionPay cards.
+type UnionPayConfiguration {
+  # The Braintree merchant account ID with UnionPay processing enabled.
+  merchantAccountId: String
+}
+
+# Fields describing a credit card.
+type CreditCardDetails {
+  # The display name of the card brand, ex: Visa, American Express.
+  brand: String
+
+  # A static code identifying the card brand (see `CreditCardBrandCode`).
+  brandCode: CreditCardBrandCode
+
+  # The last four digits of the credit card number.
+  last4: String
+
+  # Information about the credit card based on its BIN (see `BinRecord`).
+  binData: BinRecord
+}
+
+# Fields describing a Samsung Pay Card.
+type SamsungPayCardDetails {
+  # The display name of the card brand, ex: Visa, American Express.
+  brand: String
+
+  # A static code identifying the card brand of the FPAN.
+  brandCode: CreditCardBrandCode
+
+  # Information about the credit card based on its BIN.
+  binData: BinRecord
+
+  # Last four digits of the FPAN (the customer's actual backing card).
+  sourceCardLast4: CreditCardLast4
+}
+
+# A one-time-use reference to tokenized sensitive information.
+type SingleUseToken {
+  # The ID of the tokenized information
+  id: ID!
+
+  # Details about the tokenized object.
+  details: SingleUseTokenDetails
+}
+
+# Information about the credit card based on its BIN.
+type BinRecord {
+  # Whether the card is prepaid.
+  prepaid: BinRecordValue
+
+  # Whether the card is a healthcare card.
+  healthcare: BinRecordValue
+
+  # Whether the card is a debit card.
+  debit: BinRecordValue
+
+  # Whether the card is durbin regulated.
+  durbinRegulated: BinRecordValue
+
+  # Whether the card is a commercial card.
+  commercial: BinRecordValue
+
+  # Whether the card is a payroll card.
+  payroll: BinRecordValue
+
+  # The name of the bank that issued the card.
+  issuingBank: String
+
+  # The country code for the country that issued the card in ISO 3,166 alpha -3
+  # format (see `CountryCodeAlpha3`).
+  countryOfIssuance: CountryCodeAlpha3
+
+  # The product ID of the card.
+  productId: String
+}
+
+
